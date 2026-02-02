@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// International Relations Paradigm Shift Detection System Models
+
+model Country {
+  id              String    @id @default(cuid())
+  code            String    @unique // ISO 3166-1 alpha-3
+  name            String
+  region          String
+  currencyCode    String    // ISO 4217
+  currencyName    String
+  gdp             Float?
+  population      Int?
+  riskScore       Float     @default(0)
+  paradigmStatus  String    @default("STABLE") // STABLE, EMERGING, SHIFTING, COLLAPSING
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  economicData    EconomicData[]
+  alerts          Alert[]
+  forecasts       Forecast[]
+}
+
+model EconomicData {
+  id              String    @id @default(cuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  period          String    // Format: "YYYY-MM" (6-month intervals)
+  year            Int
+  half            Int       // 1 or 2
+
+  // Economic Indicators
+  gdp             Float?
+  gdpGrowth       Float?
+  inflation       Float?
+  unemployment    Float?
+  tradeBalance    Float?
+  foreignReserves Float?
+  debtToGdp       Float?
+
+  // Currency Metrics
+  exchangeRate    Float?
+  currencyVolatility Float?
+
+  // Strategic Indicators
+  militarySpending Float?
+  politicalStability Float?
+  corruptionIndex  Float?
+
+  // Triangulation Metrics
+  triangulationScore  Float?  // Measure of emerging patterns
+  resonanceLevel      Float?  // Phase alignment
+  memeDensity        Float?  // Frequency of recurring patterns
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([countryId, period])
+}
+
+model Alert {
+  id              String    @id @default(cuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  type            String    // CURRENCY_THREAT, STRATEGIC_LEVERAGE, PARADIGM_SHIFT
+  severity        String    // CRITICAL, HIGH, WARNING, INFO
+
+  title           String
+  description     String
+
+  // Metrics
+  currentValue    Float?
+  previousValue   Float?
+  thresholdValue  Float?
+  deviation       Float?
+
+  // Triangulation Data
+  memeType        String?   // WAVE, PENETRATION, RESONANCE, etc.
+  phaseState      String?   // EMERGING, PEAK, COLLAPSING, etc.
+
+  isResolved      Boolean   @default(false)
+  resolvedAt      DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Forecast {
+  id              String    @id @default(cuid())
+  countryId       String
+  country         Country   @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  forecastYear    Int
+  forecastPeriod  String    // Format: "YYYY-MM"
+
+  // Predicted Metrics
+  predictedGdp    Float?
+  predictedInflation Float?
+  predictedExchangeRate Float?
+
+  // Paradigm Prediction
+  paradigmType    String    // Current, Emerging, Collapsing, New
+  confidence      Float     // 0-100
+
+  // 20-year horizon projections
+  year5           Float?    // Metric at year 5
+  year10          Float?    // Metric at year 10
+  year15          Float?    // Metric at year 15
+  year20          Float?    // Metric at year 20
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([countryId, forecastYear])
+}
+
+model ParadigmEvent {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+
+  // Event Classification
+  paradigmType    String    // ECONOMIC, GEOPOLITICAL, TECHNOLOGICAL, CULTURAL
+  impactLevel     String    // GLOBAL, REGIONAL, NATIONAL
+
+  // Timeline
+  startDate       DateTime?
+  endDate         DateTime?
+  predictedDate   DateTime?
+
+  // Related Countries
+  affectedCountries String    // JSON array of country codes
+
+  // Detection Metrics
+  detectionScore  Float
+  confidence      Float
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model SeasonalPhase {
+  id              String    @id @default(cuid())
+  name            String    // EMERGENCE, GROWTH, PEAK, DECLINE, TRANSITION
+  description     String
+
+  // Phase Characteristics
+  typicalDuration Int       // in months
+  commonMemes     String    // JSON array of meme types
+
+  // Current Status
+  isActive        Boolean   @default(false)
+  startYear       Int?
+  endYear         Int?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
