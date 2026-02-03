@@ -114,6 +114,7 @@ export default function Home() {
     { name: 'Germany', region: 'EU', riskScore: 42, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.8σ', strategicStatus: 'Improving', color: 'from-yellow-500 to-yellow-600', icon: '🇩🇪' },
     { name: 'China', region: 'AS', riskScore: 72, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 3.8σ', strategicStatus: 'Coordinated', color: 'from-red-500 to-red-600', icon: '🇨🇳' },
     { name: 'India', region: 'SA', riskScore: 55, paradigmStatus: 'EMERGING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.5σ', strategicStatus: 'Growing', color: 'from-orange-500 to-orange-600', icon: '🇮🇳' },
+    { name: 'Russia', region: 'EU', riskScore: 78, paradigmStatus: 'CRISIS', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 4.5σ', strategicStatus: 'Isolated', color: 'from-red-600 to-red-700', icon: '🇷🇺' },
     { name: 'Australia', region: 'OC', riskScore: 48, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.8σ', strategicStatus: 'Improving', color: 'from-teal-500 to-teal-600', icon: '🇦🇺' }
   ]
 
@@ -271,6 +272,23 @@ export default function Home() {
     foreignInvestment: { value: 1.8, growth: -5.2, trend: 'down' },
     debtLevels: { value: 300, growth: 2.1, trend: 'up' },
     inflation: { avg: 4.2, trend: 'down' },
+    miningActivity: {
+      totalValue: 1.2,
+      growth: 8.5,
+      topResources: [
+        { resource: 'Lithium', value: 0.35, majorProducers: ['Australia', 'Chile', 'China'], growth: 25 },
+        { resource: 'Rare Earth Elements', value: 0.18, majorProducers: ['China', 'USA', 'Australia'], growth: 12 },
+        { resource: 'Cobalt', value: 0.12, majorProducers: ['DRC', 'Australia', 'Russia'], growth: 15 },
+        { resource: 'Copper', value: 0.32, majorProducers: ['Chile', 'Peru', 'China'], growth: 8 },
+        { resource: 'Nickel', value: 0.15, majorProducers: ['Indonesia', 'Philippines', 'Russia'], growth: 10 },
+        { resource: 'Gold', value: 0.08, majorProducers: ['China', 'Australia', 'Russia'], growth: 5 }
+      ],
+      geopoliticalImpact: {
+        high: ['Lithium', 'Cobalt', 'Rare Earth Elements'],
+        medium: ['Copper', 'Nickel', 'Uranium'],
+        low: ['Gold', 'Silver', 'Platinum']
+      }
+    },
     regions: [
       { name: 'North America', gdp: 28.5, growth: 2.1, share: 27 },
       { name: 'Europe', gdp: 23.3, growth: 0.8, share: 22 },
@@ -281,6 +299,33 @@ export default function Home() {
       { name: 'Middle East', gdp: 3.7, growth: 2.5, share: 3.5 },
       { name: 'Oceania', gdp: 2.1, growth: 1.9, share: 2 }
     ]
+  }
+
+  const worldWars = {
+    wwi: {
+      name: 'World War I',
+      period: '1914-1918',
+      duration: '4 years, 3 months',
+      countries: 32,
+      casualties: { military: 9700000, civilian: 7000000, total: 16700000 },
+      majorPowers: ['British Empire', 'France', 'Russia', 'Italy', 'United States', 'Germany', 'Austria-Hungary', 'Ottoman Empire'],
+      causes: ['Assassination of Archduke Franz Ferdinand', 'Complex alliance systems', 'Imperial competition', 'Militarization', 'Nationalism'],
+      outcomes: ['Fall of empires (German, Austro-Hungarian, Ottoman, Russian)', 'Treaty of Versailles', 'Redrawing of national borders', 'League of Nations formation'],
+      economicImpact: 'Total war cost: $208 billion (1919 USD)',
+      lessons: ['Dangers of alliance entanglements', 'Economic interdependence as peace factor', 'Need for conflict resolution mechanisms']
+    },
+    wwii: {
+      name: 'World War II',
+      period: '1939-1945',
+      duration: '6 years',
+      countries: 70,
+      casualties: { military: 25000000, civilian: 45000000, total: 70000000 },
+      majorPowers: ['United States', 'Soviet Union', 'United Kingdom', 'China', 'France', 'Germany', 'Japan', 'Italy'],
+      causes: ['Treaty of Versailles resentment', 'Rise of fascism', 'German expansionism', 'Japanese imperialism', 'Failure of League of Nations'],
+      outcomes: ['UN formation', 'Cold War emergence', 'Decolonization wave', 'Nuclear weapons development', 'International law establishment'],
+      economicImpact: 'Total war cost: $1.1 trillion (1945 USD)',
+      lessons: ['Importance of collective security', 'Dangers of appeasement', 'Economic sanctions effectiveness', 'Need for strong international institutions']
+    }
   }
 
   const repositoryData = {
@@ -636,6 +681,156 @@ export default function Home() {
                     <div className="text-2xl font-bold text-pink-600">62</div>
                     <div className="text-sm text-muted-foreground">South Asia</div>
                     <Progress value={62} className="mt-2 h-2" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* World Wars Historical Context */}
+            <Card className="border-l-4 border-l-red-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-red-600" />
+                  World Wars Historical Context
+                </CardTitle>
+                <CardDescription>Historical lessons and geopolitical impact</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* World War I */}
+                  <Card className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 border-red-200">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base text-red-700">{worldWars.wwi.name}</CardTitle>
+                        <Badge variant="destructive" className="text-xs">{worldWars.wwi.period}</Badge>
+                      </div>
+                      <CardDescription>{worldWars.wwi.duration} • {worldWars.wwi.countries} countries</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="text-center p-2 bg-white/50 dark:bg-slate-900/50 rounded">
+                          <div className="text-xs text-muted-foreground">Military</div>
+                          <div className="text-lg font-bold text-red-600">{(worldWars.wwi.casualties.military / 1000000).toFixed(1)}M</div>
+                        </div>
+                        <div className="text-center p-2 bg-white/50 dark:bg-slate-900/50 rounded">
+                          <div className="text-xs text-muted-foreground">Civilian</div>
+                          <div className="text-lg font-bold text-amber-600">{(worldWars.wwi.casualties.civilian / 1000000).toFixed(1)}M</div>
+                        </div>
+                        <div className="text-center p-2 bg-white/50 dark:bg-slate-900/50 rounded">
+                          <div className="text-xs text-muted-foreground">Total</div>
+                          <div className="text-lg font-bold text-red-700">{(worldWars.wwi.casualties.total / 1000000).toFixed(1)}M</div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground mb-1">Economic Impact</div>
+                        <div className="text-sm font-medium">{worldWars.wwi.economicImpact}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground mb-1">Key Causes</div>
+                        <div className="flex flex-wrap gap-1">
+                          {worldWars.wwi.causes.slice(0, 3).map((cause, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {cause}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-muted-foreground mb-1">Key Outcomes</div>
+                        <div className="flex flex-wrap gap-1">
+                          {worldWars.wwi.outcomes.slice(0, 2).map((outcome, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs bg-emerald-50 dark:bg-emerald-950/20">
+                              {outcome}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                        <div className="text-xs text-blue-700 font-semibold mb-1">Key Lessons</div>
+                        <div className="text-xs text-muted-foreground">{worldWars.wwi.lessons[0]}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* World War II */}
+                  <Card className="bg-gradient-to-br from-gray-800 to-gray-900 text-white border-gray-700">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base">{worldWars.wwii.name}</CardTitle>
+                        <Badge variant="destructive" className="text-xs">{worldWars.wwii.period}</Badge>
+                      </div>
+                      <CardDescription className="text-gray-300">{worldWars.wwii.duration} • {worldWars.wwii.countries} countries</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="text-center p-2 bg-white/10 rounded">
+                          <div className="text-xs text-gray-300">Military</div>
+                          <div className="text-lg font-bold text-red-300">{(worldWars.wwii.casualties.military / 1000000).toFixed(0)}M</div>
+                        </div>
+                        <div className="text-center p-2 bg-white/10 rounded">
+                          <div className="text-xs text-gray-300">Civilian</div>
+                          <div className="text-lg font-bold text-amber-300">{(worldWars.wwii.casualties.civilian / 1000000).toFixed(0)}M</div>
+                        </div>
+                        <div className="text-center p-2 bg-white/10 rounded">
+                          <div className="text-xs text-gray-300">Total</div>
+                          <div className="text-lg font-bold text-red-200">{(worldWars.wwii.casualties.total / 1000000).toFixed(0)}M</div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-300 mb-1">Economic Impact</div>
+                        <div className="text-sm font-medium">{worldWars.wwii.economicImpact}</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-300 mb-1">Key Causes</div>
+                        <div className="flex flex-wrap gap-1">
+                          {worldWars.wwii.causes.slice(0, 3).map((cause, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs bg-white/10 border-white/30">
+                              {cause}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-300 mb-1">Key Outcomes</div>
+                        <div className="flex flex-wrap gap-1">
+                          {worldWars.wwii.outcomes.slice(0, 2).map((outcome, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs bg-emerald-500/20 border-emerald-500/50">
+                              {outcome}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="p-2 bg-blue-500/20 rounded-lg">
+                        <div className="text-xs text-blue-300 font-semibold mb-1">Key Lessons</div>
+                        <div className="text-xs text-gray-300">{worldWars.wwii.lessons[0]}</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Historical Insights */}
+                <div className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/30 rounded-lg border border-amber-200">
+                  <h4 className="font-semibold mb-3 flex items-center gap-2 text-amber-800">
+                    <Target className="w-4 h-4" />
+                    Historical Parallels & Modern Implications
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <div className="p-3 bg-white/50 dark:bg-slate-900/50 rounded-lg">
+                      <div className="font-semibold text-amber-700 mb-1">Alliance Entanglements</div>
+                      <div className="text-xs text-muted-foreground">WWI showed how complex alliances can escalate conflicts. Today's NATO vs SCO vs BRICS+ presents similar risks.</div>
+                    </div>
+                    <div className="p-3 bg-white/50 dark:bg-slate-900/50 rounded-lg">
+                      <div className="font-semibold text-amber-700 mb-1">Economic Interdependence</div>
+                      <div className="text-xs text-muted-foreground">Global trade now creates stronger peace incentives than in 1914, but supply chain vulnerabilities create new risks.</div>
+                    </div>
+                    <div className="p-3 bg-white/50 dark:bg-slate-900/50 rounded-lg">
+                      <div className="font-semibold text-amber-700 mb-1">Institutional Failures</div>
+                      <div className="text-xs text-muted-foreground">League of Nations failures led to WWII. UN's effectiveness is critical for preventing global conflicts today.</div>
+                    </div>
+                    <div className="p-3 bg-white/50 dark:bg-slate-900/50 rounded-lg">
+                      <div className="font-semibold text-amber-700 mb-1">Appeasement vs. Deterrence</div>
+                      <div className="text-xs text-muted-foreground">WWII showed costs of delayed response. Modern Ukraine conflict tests this principle daily.</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -1003,6 +1198,132 @@ export default function Home() {
                     </div>
                     <p className="text-xs text-muted-foreground">Competitive devaluations emerging in 6 regions</p>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Mining Activity */}
+            <Card className="border-l-4 border-l-purple-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Hammer className="w-5 h-5 text-purple-600" />
+                  Global Mining Activity
+                </CardTitle>
+                <CardDescription>Critical resources and geopolitical impact</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/30 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-1">Total Market Value</div>
+                    <div className="text-2xl font-bold text-purple-600">${economicData.miningActivity.totalValue}T</div>
+                    <div className="flex items-center gap-1 mt-2 text-emerald-600 text-sm">
+                      <TrendingUp className="w-4 h-4" />
+                      +{economicData.miningActivity.growth}% YoY
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/30 dark:to-red-900/30 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-1">High Impact Resources</div>
+                    <div className="text-2xl font-bold text-red-600">{economicData.miningActivity.geopoliticalImpact.high.length}</div>
+                    <div className="text-xs text-muted-foreground mt-2">Critical for defense & tech</div>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/30 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-1">Medium Impact Resources</div>
+                    <div className="text-2xl font-bold text-amber-600">{economicData.miningActivity.geopoliticalImpact.medium.length}</div>
+                    <div className="text-xs text-muted-foreground mt-2">Significant strategic value</div>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30 rounded-lg">
+                    <div className="text-sm text-muted-foreground mb-1">Low Impact Resources</div>
+                    <div className="text-2xl font-bold text-blue-600">{economicData.miningActivity.geopoliticalImpact.low.length}</div>
+                    <div className="text-xs text-muted-foreground mt-2">Commercial importance</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-purple-600" />
+                      Top Resources by Value
+                    </h4>
+                    <div className="space-y-3">
+                      {economicData.miningActivity.topResources.map((resource, idx) => (
+                        <div key={idx} className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg hover:shadow-md transition-shadow">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-semibold text-sm">{resource.resource}</span>
+                            <Badge variant={idx < 3 ? 'destructive' : idx < 4 ? 'outline' : 'secondary'} className="text-xs">
+                              {idx < 3 ? 'HIGH IMPACT' : idx < 4 ? 'MEDIUM' : 'LOW'}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center justify-between text-xs mb-2">
+                            <span className="text-muted-foreground">Market Value: ${resource.value}T</span>
+                            <span className={`font-medium ${resource.growth > 15 ? 'text-emerald-600' : resource.growth > 10 ? 'text-amber-600' : 'text-blue-600'}`}>
+                              +{resource.growth}%
+                            </span>
+                          </div>
+                          <Progress value={resource.growth} className="h-1.5 mb-2" />
+                          <div className="flex flex-wrap gap-1">
+                            <span className="text-xs text-muted-foreground">Producers:</span>
+                            {resource.majorProducers.map((producer, i) => (
+                              <Badge key={i} variant="outline" className="text-xs">
+                                {producer}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Card className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950/30 dark:to-slate-900/30">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Target className="w-4 h-4 text-red-600" />
+                        Geopolitical Impact
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge className="bg-red-600 text-xs">HIGH</Badge>
+                          <span className="text-sm font-medium">Critical Resources</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {economicData.miningActivity.geopoliticalImpact.high.map((item, idx) => (
+                            <Badge key={idx} variant="outline" className="bg-red-50 dark:bg-red-950/20 border-red-300 text-xs">
+                              {item}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <Separator />
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge className="bg-amber-600 text-xs">MEDIUM</Badge>
+                          <span className="text-sm font-medium">Strategic Resources</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {economicData.miningActivity.geopoliticalImpact.medium.map((item, idx) => (
+                            <Badge key={idx} variant="outline" className="bg-amber-50 dark:bg-amber-950/20 border-amber-300 text-xs">
+                              {item}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <Separator />
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="outline" className="text-xs">LOW</Badge>
+                          <span className="text-sm font-medium">Commercial Resources</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {economicData.miningActivity.geopoliticalImpact.low.map((item, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {item}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
