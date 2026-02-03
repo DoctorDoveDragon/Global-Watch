@@ -90,6 +90,26 @@ interface Country {
   strategicStatus: string
 }
 
+interface CountryProfile {
+  name: string
+  region: string
+  flag: string
+  riskScore: number
+  paradigmStatus: string
+  systemicType: string
+  volatility: string
+  strategicStatus: string
+  gdp: number
+  population: number
+  militarySpending: number
+  nuclearCapability: boolean
+  alliances: string[]
+  majorIndustries: string[]
+  keyChallenges: string[]
+  strengths: string[]
+  recentDevelopments: string[]
+}
+
 interface AlertData {
   title: string
   severity: 'critical' | 'warning' | 'info'
@@ -104,18 +124,259 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [mapZoom, setMapZoom] = useState(1)
   const [mapPan, setMapPan] = useState({ x: 0, y: 0 })
+  const [selectedCountry, setSelectedCountry] = useState<CountryProfile | null>(null)
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000)
   }, [])
 
   const majorPowers: Country[] = [
+    // North America
     { name: 'United States', region: 'NA', riskScore: 68, paradigmStatus: 'SHIFTING', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 3.2σ', strategicStatus: 'Deteriorating', color: 'from-blue-500 to-blue-600', icon: '🇺🇸' },
+    { name: 'Canada', region: 'NA', riskScore: 32, paradigmStatus: 'STABLE', systemicType: 'Resource Sovereignty', volatility: 'Trending Down 1.2σ', strategicStatus: 'Stable', color: 'from-red-500 to-red-600', icon: '🇨🇦' },
+    { name: 'Mexico', region: 'NA', riskScore: 54, paradigmStatus: 'EMERGING', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 2.1σ', strategicStatus: 'Growing', color: 'from-green-500 to-green-600', icon: '🇲🇽' },
+
+    // Europe
     { name: 'Germany', region: 'EU', riskScore: 42, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.8σ', strategicStatus: 'Improving', color: 'from-yellow-500 to-yellow-600', icon: '🇩🇪' },
+    { name: 'France', region: 'EU', riskScore: 38, paradigmStatus: 'STABLE', systemicType: 'Strategic Autonomy', volatility: 'Trending Down 1.5σ', strategicStatus: 'Stable', color: 'from-blue-600 to-blue-700', icon: '🇫🇷' },
+    { name: 'United Kingdom', region: 'EU', riskScore: 48, paradigmStatus: 'SHIFTING', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 2.3σ', strategicStatus: 'Transitioning', color: 'from-purple-500 to-purple-600', icon: '🇬🇧' },
+    { name: 'Italy', region: 'EU', riskScore: 52, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 1.8σ', strategicStatus: 'Stable', color: 'from-green-600 to-green-700', icon: '🇮🇹' },
+    { name: 'Spain', region: 'EU', riskScore: 36, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.0σ', strategicStatus: 'Stable', color: 'from-orange-500 to-orange-600', icon: '🇪🇸' },
+    { name: 'Poland', region: 'EU', riskScore: 58, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.5σ', strategicStatus: 'Strengthening', color: 'from-red-600 to-red-700', icon: '🇵🇱' },
+    { name: 'Netherlands', region: 'EU', riskScore: 35, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 0.8σ', strategicStatus: 'Stable', color: 'from-orange-600 to-orange-700', icon: '🇳🇱' },
+
+    // Asia
     { name: 'China', region: 'AS', riskScore: 72, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 3.8σ', strategicStatus: 'Coordinated', color: 'from-red-500 to-red-600', icon: '🇨🇳' },
+    { name: 'Japan', region: 'AS', riskScore: 38, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.2σ', strategicStatus: 'Stable', color: 'from-red-600 to-white', icon: '🇯🇵' },
+    { name: 'South Korea', region: 'AS', riskScore: 52, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.8σ', strategicStatus: 'Strengthening', color: 'from-blue-500 to-cyan-500', icon: '🇰🇷' },
+    { name: 'Indonesia', region: 'AS', riskScore: 48, paradigmStatus: 'EMERGING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.2σ', strategicStatus: 'Growing', color: 'from-red-600 to-red-700', icon: '🇮🇩' },
+    { name: 'Vietnam', region: 'AS', riskScore: 45, paradigmStatus: 'EMERGING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.0σ', strategicStatus: 'Growing', color: 'from-yellow-500 to-red-600', icon: '🇻🇳' },
+    { name: 'Thailand', region: 'AS', riskScore: 42, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 1.5σ', strategicStatus: 'Stable', color: 'from-blue-500 to-blue-600', icon: '🇹🇭' },
+    { name: 'Philippines', region: 'AS', riskScore: 55, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.7σ', strategicStatus: 'Transitioning', color: 'from-yellow-600 to-orange-600', icon: '🇵🇭' },
+
+    // South Asia
     { name: 'India', region: 'SA', riskScore: 55, paradigmStatus: 'EMERGING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 2.5σ', strategicStatus: 'Growing', color: 'from-orange-500 to-orange-600', icon: '🇮🇳' },
+    { name: 'Pakistan', region: 'SA', riskScore: 68, paradigmStatus: 'CRISIS', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 3.5σ', strategicStatus: 'Unstable', color: 'from-green-500 to-green-600', icon: '🇵🇰' },
+    { name: 'Bangladesh', region: 'SA', riskScore: 58, paradigmStatus: 'EMERGING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.1σ', strategicStatus: 'Growing', color: 'from-green-600 to-green-700', icon: '🇧🇩' },
+
+    // Eurasia
     { name: 'Russia', region: 'EU', riskScore: 78, paradigmStatus: 'CRISIS', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 4.5σ', strategicStatus: 'Isolated', color: 'from-red-600 to-red-700', icon: '🇷🇺' },
-    { name: 'Australia', region: 'OC', riskScore: 48, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.8σ', strategicStatus: 'Improving', color: 'from-teal-500 to-teal-600', icon: '🇦🇺' }
+    { name: 'Ukraine', region: 'EU', riskScore: 85, paradigmStatus: 'WAR', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 5.2σ', strategicStatus: 'In Crisis', color: 'from-blue-500 to-yellow-500', icon: '🇺🇦' },
+
+    // Oceania
+    { name: 'Australia', region: 'OC', riskScore: 48, paradigmStatus: 'STABLE', systemicType: 'Monetary Sovereignty', volatility: 'Trending Down 1.8σ', strategicStatus: 'Improving', color: 'from-teal-500 to-teal-600', icon: '🇦🇺' },
+    { name: 'New Zealand', region: 'OC', riskScore: 32, paradigmStatus: 'STABLE', systemicType: 'Resource Sovereignty', volatility: 'Trending Down 1.0σ', strategicStatus: 'Stable', color: 'from-blue-600 to-blue-700', icon: '🇳🇿' },
+
+    // Africa
+    { name: 'Nigeria', region: 'AF', riskScore: 65, paradigmStatus: 'EMERGING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 3.2σ', strategicStatus: 'Growing', color: 'from-green-500 to-green-600', icon: '🇳🇬' },
+    { name: 'South Africa', region: 'AF', riskScore: 58, paradigmStatus: 'SHIFTING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.8σ', strategicStatus: 'Transitioning', color: 'from-yellow-500 to-orange-600', icon: '🇿🇦' },
+    { name: 'Egypt', region: 'ME', riskScore: 62, paradigmStatus: 'SHIFTING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 3.0σ', strategicStatus: 'Transitioning', color: 'from-red-600 to-black', icon: '🇪🇬' },
+    { name: 'Kenya', region: 'AF', riskScore: 52, paradigmStatus: 'EMERGING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.4σ', strategicStatus: 'Growing', color: 'from-red-600 to-green-600', icon: '🇰🇪' },
+
+    // Middle East
+    { name: 'Saudi Arabia', region: 'ME', riskScore: 52, paradigmStatus: 'SHIFTING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.6σ', strategicStatus: 'Transitioning', color: 'from-green-500 to-white', icon: '🇸🇦' },
+    { name: 'Iran', region: 'ME', riskScore: 72, paradigmStatus: 'CRISIS', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 3.8σ', strategicStatus: 'Isolated', color: 'from-green-600 to-red-600', icon: '🇮🇷' },
+    { name: 'Turkey', region: 'ME', riskScore: 58, paradigmStatus: 'SHIFTING', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 3.0σ', strategicStatus: 'Transitioning', color: 'from-red-600 to-red-700', icon: '🇹🇷' },
+    { name: 'Israel', region: 'ME', riskScore: 68, paradigmStatus: 'CRISIS', systemicType: 'Strategic Autonomy', volatility: 'Trending Up 3.5σ', strategicStatus: 'In Crisis', color: 'from-blue-600 to-white', icon: '🇮🇱' },
+
+    // Latin America
+    { name: 'Brazil', region: 'LA', riskScore: 52, paradigmStatus: 'SHIFTING', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.3σ', strategicStatus: 'Transitioning', color: 'from-green-500 to-yellow-500', icon: '🇧🇷' },
+    { name: 'Argentina', region: 'LA', riskScore: 62, paradigmStatus: 'CRISIS', systemicType: 'Monetary Sovereignty', volatility: 'Trending Up 3.5σ', strategicStatus: 'Unstable', color: 'from-blue-500 to-blue-600', icon: '🇦🇷' },
+    { name: 'Colombia', region: 'LA', riskScore: 48, paradigmStatus: 'STABLE', systemicType: 'Resource Sovereignty', volatility: 'Trending Up 2.0σ', strategicStatus: 'Stable', color: 'from-yellow-500 to-blue-500', icon: '🇨🇴' },
+    { name: 'Chile', region: 'LA', riskScore: 42, paradigmStatus: 'STABLE', systemicType: 'Resource Sovereignty', volatility: 'Trending Down 1.5σ', strategicStatus: 'Stable', color: 'from-red-500 to-blue-500', icon: '🇨🇱' }
+  ]
+
+  const countryProfiles: CountryProfile[] = [
+    {
+      name: 'United States',
+      region: 'NA',
+      flag: '🇺🇸',
+      riskScore: 68,
+      paradigmStatus: 'SHIFTING',
+      systemicType: 'Monetary Sovereignty',
+      volatility: 'Trending Up 3.2σ',
+      strategicStatus: 'Deteriorating',
+      gdp: 28.5,
+      population: 332,
+      militarySpending: 916,
+      nuclearCapability: true,
+      alliances: ['NATO', 'QUAD', 'G7', 'Five Eyes'],
+      majorIndustries: ['Technology', 'Finance', 'Defense', 'Entertainment', 'Agriculture'],
+      keyChallenges: ['Domestic political polarization', 'Infrastructure decay', 'Debt levels', 'Global leadership competition'],
+      strengths: ['Military superiority', 'Financial dominance', 'Innovation leadership', 'Global alliances'],
+      recentDevelopments: ['Tech war with China', 'NATO expansion efforts', 'Energy independence push', 'Supply chain reshoring']
+    },
+    {
+      name: 'China',
+      region: 'AS',
+      flag: '🇨🇳',
+      riskScore: 72,
+      paradigmStatus: 'SHIFTING',
+      systemicType: 'Strategic Autonomy',
+      volatility: 'Trending Up 3.8σ',
+      strategicStatus: 'Coordinated',
+      gdp: 18.5,
+      population: 1425,
+      militarySpending: 292,
+      nuclearCapability: true,
+      alliances: ['SCO', 'BRICS+', 'Belt and Road Initiative'],
+      majorIndustries: ['Manufacturing', 'Technology', 'Construction', 'Energy', 'Mining'],
+      keyChallenges: ['Economic slowdown', 'Population aging', 'US strategic competition', 'Sea access disputes'],
+      strengths: ['Manufacturing dominance', 'BRI influence', 'Technology advancement', 'Resource access'],
+      recentDevelopments: ['Taiwan tensions', 'South China Sea militarization', 'Dedollarization efforts', 'Belt and Road expansion']
+    },
+    {
+      name: 'Russia',
+      region: 'EU',
+      flag: '🇷🇺',
+      riskScore: 78,
+      paradigmStatus: 'CRISIS',
+      systemicType: 'Resource Sovereignty',
+      volatility: 'Trending Up 4.5σ',
+      strategicStatus: 'Isolated',
+      gdp: 2.2,
+      population: 144,
+      militarySpending: 86,
+      nuclearCapability: true,
+      alliances: ['SCO', 'CSTO'],
+      majorIndustries: ['Energy', 'Mining', 'Defense', 'Agriculture'],
+      keyChallenges: ['Sanctions pressure', 'Demographic decline', 'Economic isolation', 'Ukraine war costs'],
+      strengths: ['Energy dominance', 'Nuclear arsenal', 'Resource independence', 'Cyber capabilities'],
+      recentDevelopments: ['Ukraine war', 'Pivot to Asia', 'Sanctions resistance', 'Nuclear posturing']
+    },
+    {
+      name: 'Germany',
+      region: 'EU',
+      flag: '🇩🇪',
+      riskScore: 42,
+      paradigmStatus: 'STABLE',
+      systemicType: 'Monetary Sovereignty',
+      volatility: 'Trending Down 1.8σ',
+      strategicStatus: 'Improving',
+      gdp: 4.4,
+      population: 83,
+      militarySpending: 67,
+      nuclearCapability: false,
+      alliances: ['EU', 'NATO'],
+      majorIndustries: ['Manufacturing', 'Automotive', 'Technology', 'Chemicals'],
+      keyChallenges: ['Energy transition costs', 'Industrial competitiveness', 'Immigration pressure'],
+      strengths: ['Economic powerhouse', 'EU leadership', 'Technology innovation', 'Green energy transition'],
+      recentDevelopments: ['Energy diversification', 'Defense spending increase', 'Industrial policy reform']
+    },
+    {
+      name: 'Japan',
+      region: 'AS',
+      flag: '🇯🇵',
+      riskScore: 38,
+      paradigmStatus: 'STABLE',
+      systemicType: 'Monetary Sovereignty',
+      volatility: 'Trending Down 1.2σ',
+      strategicStatus: 'Stable',
+      gdp: 4.2,
+      population: 125,
+      militarySpending: 55,
+      nuclearCapability: false,
+      alliances: ['QUAD', 'G7'],
+      majorIndustries: ['Technology', 'Automotive', 'Robotics', 'Finance'],
+      keyChallenges: ['Population aging', 'Economic stagnation', 'North Korea threat'],
+      strengths: ['Technology leadership', 'Strong alliances', 'High savings rate', 'Quality manufacturing'],
+      recentDevelopments: ['Defense spending growth', 'Strategic partnership diversification', 'Demographic reforms']
+    },
+    {
+      name: 'India',
+      region: 'SA',
+      flag: '🇮🇳',
+      riskScore: 55,
+      paradigmStatus: 'EMERGING',
+      systemicType: 'Strategic Autonomy',
+      volatility: 'Trending Up 2.5σ',
+      strategicStatus: 'Growing',
+      gdp: 3.7,
+      population: 1428,
+      militarySpending: 83,
+      nuclearCapability: true,
+      alliances: ['QUAD', 'SCO', 'BRICS+'],
+      majorIndustries: ['Technology', 'Pharmaceuticals', 'Agriculture', 'Textiles'],
+      keyChallenges: ['Pakistan tensions', 'China border disputes', 'Poverty reduction', 'Infrastructure gaps'],
+      strengths: ['Demographic dividend', 'Technology hub', 'Geopolitical balance', 'Strategic location'],
+      recentDevelopments: ['Multi-alignment strategy', 'Defense modernization', 'Digital economy push', 'Infrastructure investment']
+    },
+    {
+      name: 'Brazil',
+      region: 'LA',
+      flag: '🇧🇷',
+      riskScore: 52,
+      paradigmStatus: 'SHIFTING',
+      systemicType: 'Resource Sovereignty',
+      volatility: 'Trending Up 2.3σ',
+      strategicStatus: 'Transitioning',
+      gdp: 2.1,
+      population: 215,
+      militarySpending: 22,
+      nuclearCapability: false,
+      alliances: ['BRICS+', 'UNASUR'],
+      majorIndustries: ['Agriculture', 'Mining', 'Energy', 'Aerospace'],
+      keyChallenges: ['Political instability', 'Economic inequality', 'Deforestation pressure'],
+      strengths: ['Resource abundance', 'Agricultural power', 'Regional influence', 'Green energy potential'],
+      recentDevelopments: ['BRICS+ leadership', 'Amazon protection policies', 'Lithium development', 'South-South cooperation']
+    },
+    {
+      name: 'Ukraine',
+      region: 'EU',
+      flag: '🇺🇦',
+      riskScore: 85,
+      paradigmStatus: 'WAR',
+      systemicType: 'Resource Sovereignty',
+      volatility: 'Trending Up 5.2σ',
+      strategicStatus: 'In Crisis',
+      gdp: 0.2,
+      population: 41,
+      militarySpending: 44,
+      nuclearCapability: false,
+      alliances: ['NATO'],
+      majorIndustries: ['Agriculture', 'IT', 'Metallurgy'],
+      keyChallenges: ['Russian invasion', 'Infrastructure destruction', 'Economic collapse', 'Refugee crisis'],
+      strengths: ['Democratic resilience', 'International support', 'Tech sector growth', 'Strategic importance'],
+      recentDevelopments: ['War with Russia', 'EU accession process', 'Defense buildup', 'Reconstruction planning']
+    },
+    {
+      name: 'Iran',
+      region: 'ME',
+      flag: '🇮🇷',
+      riskScore: 72,
+      paradigmStatus: 'CRISIS',
+      systemicType: 'Resource Sovereignty',
+      volatility: 'Trending Up 3.8σ',
+      strategicStatus: 'Isolated',
+      gdp: 0.4,
+      population: 88,
+      militarySpending: 25,
+      nuclearCapability: false,
+      alliances: ['SCO', 'Resistance Axis'],
+      majorIndustries: ['Energy', 'Defense', 'Mining', 'Automotive'],
+      keyChallenges: ['Sanctions regime', 'Economic isolation', 'Protest movements', 'Regional tensions'],
+      strengths: ['Energy resources', 'Strategic location', 'Proxy network power', 'Missile development'],
+      recentDevelopments: ['Nuclear program advances', 'Regional proxy operations', 'Sanctions resistance', 'China partnership']
+    },
+    {
+      name: 'South Africa',
+      region: 'AF',
+      flag: '🇿🇦',
+      riskScore: 58,
+      paradigmStatus: 'SHIFTING',
+      systemicType: 'Resource Sovereignty',
+      volatility: 'Trending Up 2.8σ',
+      strategicStatus: 'Transitioning',
+      gdp: 0.4,
+      population: 60,
+      militarySpending: 4,
+      nuclearCapability: false,
+      alliances: ['BRICS+', 'AU'],
+      majorIndustries: ['Mining', 'Agriculture', 'Finance', 'Energy'],
+      keyChallenges: ['Energy crisis', 'Infrastructure deficits', 'Crime rates', 'Inequality'],
+      strengths: ['Resource wealth', 'Financial hub', 'Constitutional democracy', 'Regional influence'],
+      recentDevelopments: ['Energy transition', 'BRICS+ participation', 'Mining expansion', 'Infrastructure investment']
+    }
   ]
 
   const alerts: AlertData[] = [
@@ -312,7 +573,51 @@ export default function Home() {
       causes: ['Assassination of Archduke Franz Ferdinand', 'Complex alliance systems', 'Imperial competition', 'Militarization', 'Nationalism'],
       outcomes: ['Fall of empires (German, Austro-Hungarian, Ottoman, Russian)', 'Treaty of Versailles', 'Redrawing of national borders', 'League of Nations formation'],
       economicImpact: 'Total war cost: $208 billion (1919 USD)',
-      lessons: ['Dangers of alliance entanglements', 'Economic interdependence as peace factor', 'Need for conflict resolution mechanisms']
+      lessons: ['Dangers of alliance entanglements', 'Economic interdependence as peace factor', 'Need for conflict resolution mechanisms'],
+      militaryFactors: {
+        troopNumbers: {
+          totalMobilized: '70 million',
+          peakCasualties: '237,000 per day (Battle of the Somme)',
+          trenchWarfareDuration: '4 years of static lines',
+          artillaryShellsUsed: '1.5 billion shells'
+        },
+        strategies: {
+          westernFront: 'Trench warfare with minimal territorial gain',
+          easternFront: 'Mobile warfare with fluid frontlines',
+          navalBlockade: 'British naval blockade of Central Powers',
+          airWarfare: 'Limited reconnaissance, strategic bombing in late war',
+          uBoatWarfare: 'Unrestricted submarine warfare by Germany'
+        },
+        technologies: {
+          weapons: ['Rifles', 'Machine guns', 'Artillery', 'Tanks (late war)', 'Poison gas', 'Aircraft', 'Submarines', 'Flamethrowers'],
+          innovations: ['Tank warfare (British Mark I-V)', 'Air reconnaissance', 'Wireless communications', 'Chemical weapons', 'Naval convoy systems'],
+          medicalAdvances: ['Blood transfusions', 'Antiseptic surgery', 'Field hospitals', 'Shell shock treatment'],
+          communication: ['Telegraph', 'Telephone', 'Signal flags', 'Carrier pigeons']
+        },
+        technologyGap: {
+          alliesAdvantage: ['Superior naval power', 'More industrial capacity', 'Better logistics', 'US entry late war'],
+          centralPowersAdvantage: ['Internal lines of communication', 'Better defensive positions', 'Superior artillery initially', 'Chemical weapons first use']
+        }
+      },
+      technologicalFactors: {
+        industrialRevolutionImpact: {
+          massProduction: 'Rifles, artillery, ammunition',
+          chemicalIndustry: 'Explosives, poison gas production',
+          logistics: 'Railway mobilization, steam ships'
+        },
+        technologicalInnovations: {
+          year1914: 'Traditional warfare: cavalry, bolt-action rifles',
+          year1916: 'Static warfare: machine guns, barbed wire, trenches',
+          year1917: 'Mobile warfare breakthrough: tanks, aircraft bombing',
+          year1918: 'Combined arms: tank-infantry coordination'
+        },
+        warfareEvolution: {
+          cavalryToInfantry: 'Cavalry becomes obsolete',
+          openToTrench: 'Transition from mobile to static warfare',
+          chemicalWarfare: 'First large-scale use of poison gas',
+          airCombat: 'Birth of aerial combat and strategic bombing'
+        }
+      }
     },
     wwii: {
       name: 'World War II',
@@ -324,7 +629,60 @@ export default function Home() {
       causes: ['Treaty of Versailles resentment', 'Rise of fascism', 'German expansionism', 'Japanese imperialism', 'Failure of League of Nations'],
       outcomes: ['UN formation', 'Cold War emergence', 'Decolonization wave', 'Nuclear weapons development', 'International law establishment'],
       economicImpact: 'Total war cost: $1.1 trillion (1945 USD)',
-      lessons: ['Importance of collective security', 'Dangers of appeasement', 'Economic sanctions effectiveness', 'Need for strong international institutions']
+      lessons: ['Importance of collective security', 'Dangers of appeasement', 'Economic sanctions effectiveness', 'Need for strong international institutions'],
+      militaryFactors: {
+        troopNumbers: {
+          peakMobilized: '100 million personnel',
+          largestBattle: 'Battle of Stalingrad: 2.2 million casualties',
+          frontLineLength: '4,000 miles across multiple theaters',
+          armoredVehicles: '100,000+ tanks deployed'
+        },
+        strategies: {
+          blitzkrieg: 'German combined arms, rapid advance tactics',
+          islandHopping: 'US Pacific campaign strategy',
+          deepOperations: 'Soviet encirclement and breakthrough tactics',
+          strategicBombing: 'Allied aerial bombing of civilian and industrial targets',
+          navalWarfare: 'Aircraft carrier warfare in Pacific, submarine warfare in Atlantic'
+        },
+        technologies: {
+          weapons: ['Tanks (Panzers, T-34, Sherman)', 'Aircraft fighters', 'Bombers', 'V-2 rockets', 'Atomic bombs', 'Radar', 'Sonar', 'Jet aircraft'],
+          innovations: ['Radar detection', 'Code breaking (Enigma, Purple)', 'Jet propulsion', 'Nuclear weapons', 'Amphious landing craft', 'Self-propelled artillery'],
+          medicalAdvances: ['Penicillin mass production', 'Blood plasma', 'Plastic surgery', 'D-DAY medical evacuation'],
+          communication: ['Radio encryption', 'RADAR networks', 'Teletype communications', 'Early warning systems']
+        },
+        technologyGap: {
+          earlyWarAdvantage: ['German Blitzkrieg tactics', 'Japanese Zero fighter superiority', 'German U-boat success'],
+          midWarAdvantage: ['Allied radar advantage', 'Soviet T-34 tank quality', 'US industrial production capacity'],
+          lateWarAdvantage: ['Allied numerical superiority', 'Atomic bomb monopoly', 'Jet aircraft development']
+        }
+      },
+      technologicalFactors: {
+        industrialTotalWar: {
+          warEconomy: 'Complete civilian mobilization for war production',
+          massProduction: 'Standardized vehicles, weapons, aircraft manufacturing',
+          synthetics: ['Rubber', 'Fuel', 'Explosives - synthetic alternatives to natural resources'],
+          nuclearDevelopment: 'Manhattan Project and German nuclear research'
+        },
+        technologicalInnovations: {
+          year1939: 'Early war: Blitzkrieg, early aircraft',
+          year1941: 'Technology war: Radar, Enigma codebreaking, sonar',
+          year1943: 'Air superiority: Long-range bombers, jet engines',
+          year1944: 'Endgame: V-2 rockets, guided missiles, atomic bomb development',
+          year1945: 'Nuclear age: Atomic bombs dropped on Hiroshima and Nagasaki'
+        },
+        warfareRevolution: {
+          mechanizedWarfare: 'Tank warfare replaces cavalry',
+          airPower: 'Strategic bombing and air superiority',
+          electronicWarfare: 'Radar, sonar, code breaking',
+          nuclearEra: 'End of conventional warfare dominance'
+        },
+        scientificRace: {
+          radarDevelopment: 'British Chain Home vs German Freya',
+          codeBreaking: 'Ultra vs Enigma, US code breaking vs Japanese Purple',
+          nuclearRace: 'Manhattan Project vs German nuclear program',
+          rocketTechnology: 'V-2 rockets vs Allied air defenses'
+        }
+      }
     }
   }
 
@@ -1758,28 +2116,204 @@ export default function Home() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    {majorPowers.map((country, idx) => (
-                      <div key={idx} className={`flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r ${country.color} text-white`}>
-                        <span className="text-2xl">{country.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold truncate">{country.name}</div>
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className="opacity-80">{country.region}</span>
-                            <Badge className="bg-white/20 text-white border border-white/30 text-xs">
-                              {country.riskScore >= 70 ? '⚠️ HIGH' : '⚡ MOD'}
-                            </Badge>
+                  <ScrollArea className="h-[500px] pr-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {majorPowers.map((country, idx) => {
+                        const profile = countryProfiles.find(p => p.name === country.name)
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => profile && setSelectedCountry(profile)}
+                            className={`cursor-pointer p-4 rounded-lg bg-gradient-to-r ${country.color} text-white hover:shadow-xl transition-all hover:scale-105 ${selectedCountry?.name === country.name ? 'ring-4 ring-white ring-opacity-50' : ''}`}
+                          >
+                            <span className="text-3xl mb-2">{country.icon}</span>
+                            <div className="space-y-1">
+                              <div className="text-sm font-semibold">{country.name}</div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="opacity-90">{country.region}</span>
+                              </div>
+                              <Badge className="bg-white/20 text-white border border-white/30 text-xs">
+                                Risk: {country.riskScore}
+                              </Badge>
+                            </div>
                           </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold">{country.riskScore}</div>
-                          <div className="text-xs opacity-80">Risk</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                        )
+                      })}
+                    </div>
+                  </ScrollArea>
                 </CardContent>
               </Card>
+
+              {/* Country Profile Modal */}
+              {selectedCountry && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setSelectedCountry(null)}>
+                  <div className="bg-background rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                    <Card className="border-2">
+                      <CardHeader className={`bg-gradient-to-r from-blue-500 to-purple-600 text-white ${selectedCountry.flag === '🇷🇺' ? 'from-red-600 to-red-700' : ''}`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-4xl">{selectedCountry.flag}</span>
+                            <div>
+                              <CardTitle className="text-white text-xl">{selectedCountry.name}</CardTitle>
+                              <CardDescription className="text-white/80">{selectedCountry.region} • {selectedCountry.paradigmStatus}</CardDescription>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="icon" onClick={() => setSelectedCountry(null)}>
+                            <div className="text-white text-2xl">×</div>
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-6 pt-6">
+                        {/* Quick Stats */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">GDP</div>
+                            <div className="text-2xl font-bold text-blue-600">${selectedCountry.gdp}T</div>
+                          </div>
+                          <div className="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">Population</div>
+                            <div className="text-2xl font-bold text-emerald-600">{(selectedCountry.population / 1000).toFixed(0)}M</div>
+                          </div>
+                          <div className="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">Military Spending</div>
+                            <div className="text-2xl font-bold text-red-600">${selectedCountry.militarySpending}B</div>
+                          </div>
+                          <div className="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                            <div className="text-sm text-muted-foreground mb-1">Risk Score</div>
+                            <div className="text-2xl font-bold text-amber-600">{selectedCountry.riskScore}</div>
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Strategic Status */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Target className="w-5 h-5 text-purple-600" />
+                            Strategic Position
+                          </h4>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                              <div className="text-xs text-muted-foreground">Status</div>
+                              <div className="font-semibold">{selectedCountry.strategicStatus}</div>
+                            </div>
+                            <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                              <div className="text-xs text-muted-foreground">Systemic Type</div>
+                              <div className="font-semibold">{selectedCountry.systemicType}</div>
+                            </div>
+                            <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                              <div className="text-xs text-muted-foreground">Volatility</div>
+                              <div className="font-semibold text-xs">{selectedCountry.volatility}</div>
+                            </div>
+                            <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                              <div className="text-xs text-muted-foreground">Nuclear</div>
+                              <Badge variant={selectedCountry.nuclearCapability ? 'destructive' : 'secondary'} className="text-xs">
+                                {selectedCountry.nuclearCapability ? 'Yes' : 'No'}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Alliances */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Shield className="w-5 h-5 text-blue-600" />
+                            Alliances & Partnerships
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedCountry.alliances.map((alliance, idx) => (
+                              <Badge key={idx} variant="outline" className="text-sm px-3 py-1">
+                                {alliance}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Major Industries */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Building2 className="w-5 h-5 text-emerald-600" />
+                            Major Industries
+                          </h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {selectedCountry.majorIndustries.map((industry, idx) => (
+                              <div key={idx} className="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg border border-emerald-200">
+                                <span className="text-sm font-medium">{industry}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Strengths */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-blue-600" />
+                            Strategic Strengths
+                          </h4>
+                          <div className="space-y-2">
+                            {selectedCountry.strengths.map((strength, idx) => (
+                              <div key={idx} className="flex items-start gap-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5" />
+                                <span className="text-sm">{strength}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Key Challenges */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <AlertTriangle className="w-5 h-5 text-amber-600" />
+                            Key Challenges
+                          </h4>
+                          <div className="space-y-2">
+                            {selectedCountry.keyChallenges.map((challenge, idx) => (
+                              <div key={idx} className="flex items-start gap-2 p-2 bg-amber-50 dark:bg-amber-950/20 rounded-lg">
+                                <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5" />
+                                <span className="text-sm">{challenge}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        {/* Recent Developments */}
+                        <div>
+                          <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Activity className="w-5 h-5 text-purple-600" />
+                            Recent Developments
+                          </h4>
+                          <div className="space-y-2">
+                            {selectedCountry.recentDevelopments.map((dev, idx) => (
+                              <div key={idx} className="flex items-start gap-2 p-2 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                                <div className="w-2 h-2 rounded-full bg-purple-600 mt-1.5" />
+                                <span className="text-sm">{dev}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Separator />
+
+                        <div className="flex justify-between items-center">
+                          <Button variant="outline" onClick={() => setSelectedCountry(null)}>
+                            Close Profile
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              )}
 
               <Card className="bg-gradient-to-br from-violet-50 to-pink-50 dark:from-violet-950/30 dark:to-pink-950/30 border-violet-200">
                 <CardHeader className="pb-2">
