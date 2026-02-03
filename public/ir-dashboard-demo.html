@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geopolitical Intelligence Dashboard | Paradigm Shift Detection System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-badge {
+            background: #10b981;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .header-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .nav-item .icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+        
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .alert-panel {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .alert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .alert-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid;
+            transition: all 0.2s;
+        }
+        
+        .alert-card:hover {
+            transform: translateX(4px);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .alert-card.critical {
+            border-left-color: #ef4444;
+        }
+        
+        .alert-card.high {
+            border-left-color: #f59e0b;
+        }
+        
+        .alert-card.warning {
+            border-left-color: #fbbf24;
+        }
+        
+        .alert-card .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-card .alert-type {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .alert-card .alert-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        .alert-card .alert-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-card .alert-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+        
+        .alert-card .alert-metrics {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .alert-metric {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .card-btn {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #e2e8f0;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        
+        .card-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+        
+        .card-btn.secondary {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .metric-value.good {
+            color: #10b981;
+        }
+        
+        .metric-value.warning {
+            color: #f59e0b;
+        }
+        
+        .metric-value.critical {
+            color: #ef4444;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        
+        .metric-change {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .metric-change.up {
+            color: #10b981;
+        }
+        
+        .metric-change.down {
+            color: #ef4444;
+        }
+        
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 300px;
+        }
+        
+        .country-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .country-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
+        }
+        
+        .country-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .country-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .country-flag {
+            width: 32px;
+            height: 20px;
+            border-radius: 3px;
+            object-fit: cover;
+        }
+        
+        .country-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .country-code {
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+        
+        .country-metrics {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .threat-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .threat-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .panel-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 2px solid #1a1a2e;
+        }
+        
+        .timeline-item.critical::before {
+            background: #ef4444;
+        }
+        
+        .timeline-item.warning::before {
+            background: #f59e0b;
+        }
+        
+        .timeline-date {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .paradigm-badge {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tag.critical {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+        
+        .tag.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .metric-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a10 10 0 0 1 10 10"/>
+                <path d="M12 6v6"/>
+                <path d="M8 12h8"/>
+                <path d="M12 16v-4"/>
+            </svg>
+            Geopolitical Intelligence System
+        </h1>
+        <div class="header-controls">
+            <span class="status-badge">● System Operational</span>
+            <button class="header-btn">📊 Reports</button>
+            <button class="header-btn">⚙️ Settings</button>
+            <button class="header-btn">👤 Profile</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Navigation</div>
+                <div class="nav-item active">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M2 12h20"/>
+                        <path d="M12 2v10"/>
+                    </svg>
+                    <span>20-Year Forecast</span>
+                </div>
+                <div class="nav-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 21v-8a2 2 0 0 1 2-2 2 2 0 0 1 2-2h-2"/>
+                        <circle cx="12" cy="7" r="1"/>
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="17" r="1"/>
+                        <path d="M12 21v-2"/>
+                    </svg>
+                    <span>Currency Threats</span>
+                </div>
+                <div class="nav-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0 0-4 4H4a4 4 0 0 0 0-4 4v2"/>
+                        <path d="M17 7H4"/>
+                        <circle cx="8" cy="8" r="1"/>
+                        <circle cx="12" cy="8" r="1"/>
+                        <circle cx="16" cy="8" r="1"/>
+                    </svg>
+                    <span>Strategic Leverage</span>
+                </div>
+                <div class="nav-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.29 9l3 3.86"/>
+                        <path d="M12 2a2 2 0 0 1 2 2 0 0 1 2 2 0 0 1-2 2v2a10 10 0 0 1-10-10 0 0 1 10 10 0 0 1-2 2 2a10 10 0 0 1 10 10 0 0 1 0 10h-2a2 2 0 0 1-2-2 0 0 1-2 2z"/>
+                    </svg>
+                    <span>Paradigm Shifts</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Filters</div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; opacity: 0.7; display: block; margin-bottom: 0.5rem;">Region</label>
+                    <select style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e2e8f0;">
+                        <option value="all">All Regions</option>
+                        <option value="asia-pacific">Asia-Pacific</option>
+                        <option value="europe">Europe</option>
+                        <option value="middle-east">Middle East</option>
+                        <option value="americas">Americas</option>
+                        <option value="africa">Africa</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; opacity: 0.7; display: block; margin-bottom: 0.5rem;">Threat Level</label>
+                    <select style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e2e8f0;">
+                        <option value="all">All Levels</option>
+                        <option value="critical">Critical Only</option>
+                        <option value="high">High & Critical</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; opacity: 0.7; display: block; margin-bottom: 0.5rem;">Time Horizon</label>
+                    <select style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e2e8f0;">
+                        <option value="6mo">6 Months</option>
+                        <option value="2yr" selected>2 Years</option>
+                        <option value="5yr">5 Years</option>
+                        <option value="10yr">10 Years</option>
+                        <option value="20yr">20 Years</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <!-- Active Alerts Panel -->
+            <section class="alert-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.125rem; margin: 0;">🚨 Active Intelligence Alerts</h2>
+                    <span style="font-size: 0.875rem; opacity: 0.7;">5 active alerts requiring attention</span>
+                </div>
+                <div class="alert-grid" id="alertGrid">
+                    <!-- Alerts will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- System Metrics -->
+            <section class="card full-width">
+                <div class="card-header">
+                    <h3 class="card-title">Global System Health Metrics</h3>
+                    <div class="card-actions">
+                        <button class="card-btn">🔄 Refresh</button>
+                        <button class="card-btn secondary">📥 Export</button>
+                    </div>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value warning" id="metricCrisisProb">0.67</div>
+                        <div class="metric-label">System Crisis Probability</div>
+                        <div class="metric-change up">↑ 2.3% from last interval</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value good" id="metricDeviation">3.2%</div>
+                        <div class="metric-label">Deviation from Baseline</div>
+                        <div class="metric-change down">↓ 0.8% from last interval</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning" id="metricTriangulation">0.68</div>
+                        <div class="metric-label">Triangulation Health</div>
+                        <div class="metric-change up">↑ 1.1% from last interval</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value good" id="metricResonance">0.74</div>
+                        <div class="metric-label">Resonance Coherence</div>
+                        <div class="metric-change down">↓ 0.3% from last interval</div>
+                    </div>
+                </div>
+                <div class="chart-container" style="margin-top: 1rem;">
+                    <canvas id="systemHealthChart" height="300"></canvas>
+                </div>
+            </section>
+
+            <!-- Country Analysis -->
+            <section class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🌍 Country Risk Rankings</h3>
+                    </div>
+                    <div class="country-list" id="countryList">
+                        <!-- Countries will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Currency Threat Analysis</h3>
+                        <div class="card-actions">
+                            <select id="countrySelect" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #e2e8f0; padding: 0.5rem;">
+                                <option value="CHN">China (CNY)</option>
+                                <option value="RUS">Russia (RUB)</option>
+                                <option value="USA" selected>United States (USD)</option>
+                                <option value="EUR">Eurozone (EUR)</option>
+                                <option value="IRN">Iran (IRR)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="metric-grid" style="grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <div class="metric-label">Volatility Risk</div>
+                            <div class="metric-value warning" id="volatilityValue">0.42</div>
+                        </div>
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <div class="metric-label">Reserve Adequacy</div>
+                            <div class="metric-value critical" id="reserveValue">0.38</div>
+                        </div>
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <div class="metric-label">Sanction Impact</div>
+                            <div class="metric-value good" id="sanctionValue">0.15</div>
+                        </div>
+                        <div class="metric-card" style="padding: 0.75rem;">
+                            <div class="metric-label">Capital Flight Risk</div>
+                            <div class="metric-value warning" id="capitalValue">0.51</div>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="margin-top: 1rem;">
+                        <canvas id="currencyThreatChart" height="250"></canvas>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem;">CRISIS PROBABILITY (20-Year Horizon)</div>
+                        <div style="display: flex; gap: 2rem; align-items: center;">
+                            <div style="flex: 1;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;" id="crisisProb6mo">18%</div>
+                                <div style="font-size: 0.75rem; opacity: 0.7;">6 months</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;" id="crisisProb5yr">34%</div>
+                                <div style="font-size: 0.75rem; opacity: 0.7;">5 years</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #ef4444;" id="crisisProb10yr">57%</div>
+                                <div style="font-size: 0.75rem; opacity: 0.7;">10 years</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #ef4444;" id="crisisProb20yr">73%</div>
+                                <div style="font-size: 0.75rem; opacity: 0.7;">20 years</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 20-Year Forecast -->
+                <section class="card full-width">
+                    <div class="card-header">
+                        <h3 class="card-title">🔮 20-Year Paradigm Shift Forecast</h3>
+                        <div class="card-actions">
+                            <button class="card-btn">📊 Generate Report</button>
+                            <button class="card-btn secondary">💾 Save Scenario</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="tag warning" id="currentParadigm">Current Paradigm: Multipolar Competition</span>
+                        <span style="margin-left: 0.5rem; opacity: 0.7;">→</span>
+                        <span class="tag" id="projectedParadigm">Projected (2034): Multipolar Cooperation</span>
+                        <span style="margin-left: 0.5rem; opacity: 0.7;">→</span>
+                        <span class="tag critical">Risk: High</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="paradigmChart" height="350"></canvas>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Right Panel: Strategic Leverage & Timeline -->
+            <aside class="right-panel">
+                <div class="panel-card">
+                    <div class="panel-title">⚔️ Strategic Leverage Tracker</div>
+                    <div id="leverageList" style="margin-top: 1rem;">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-title">📅 Event Timeline</div>
+                    <div class="timeline" id="eventTimeline">
+                        <div class="timeline-item critical">
+                            <div class="timeline-date">2024</div>
+                            <div class="timeline-title">🚨 Sanctions Package Expansion</div>
+                            <div class="timeline-description">New sanctions targeting energy sector will significantly impact currency stability. 73% probability of crisis escalation within 12 months.</div>
+                        </div>
+                        <div class="timeline-item warning">
+                            <div class="timeline-date">2026</div>
+                            <div class="timeline-title">⚡️ Alliance Restructuring Event</div>
+                            <div class="timeline-description">Major diplomatic realignment expected. Shift from bilateral to multilateral alliance structures detected.</div>
+                        </div>
+                        <div class="timeline-item warning">
+                            <div class="timeline-date">2029</div>
+                            <div class="timeline-title">💱 Currency System Transition</div>
+                            <div class="timeline-description">Increased adoption of alternative payment systems signals paradigm shift in global monetary architecture.</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2032</div>
+                            <div class="timeline-title">🌐 New Order Emergence</div>
+                            <div class="timeline-description">Multipolar cooperation paradigm stabilizes. New institutional frameworks operational.</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        // Sample data
+        const alerts = [
+            {
+                id: 1,
+                type: 'critical',
+                alertType: 'currency_threat_escalating',
+                title: 'Currency Crisis Imminent: Russian Ruble',
+                description: 'Exchange rate volatility exceeded 45% threshold. Reserve adequacy critical at 0.15. 73% probability of major crisis within 6 months.',
+                countries: ['RUS'],
+                time: '2 hours ago'
+            },
+            {
+                id: 2,
+                type: 'high',
+                alertType: 'sanction_impact_critical',
+                title: 'Sanction Impact: Energy Sector',
+                description: 'New sanctions targeting energy exports will create supply chain disruptions. Significant impact on global energy prices and currency markets.',
+                countries: ['IRN', 'RUS', 'CHN'],
+                time: '5 hours ago'
+            },
+            {
+                id: 3,
+                type: 'warning',
+                alertType: 'alliance_instability_detected',
+                title: 'Alliance Network Fracture',
+                description: 'Triangulation health declining in European alliance network. Bridge nodes showing reduced resonance coherence.',
+                countries: ['EUR', 'USA', 'GBR'],
+                time: '1 day ago'
+            },
+            {
+                id: 4,
+                type: 'high',
+                alertType: 'strategic_leverage_declining',
+                title: 'Strategic Leverage Shift: USA',
+                description: 'Economic leverage declining relative to emerging markets. Technology leadership remains strong but trade dominance eroding.',
+                countries: ['USA'],
+                time: '2 days ago'
+            },
+            {
+                id: 5,
+                type: 'warning',
+                alertType: 'paradigm_shift_imminent',
+                title: 'Paradigm Shift Signal Detected',
+                description: 'Multiple indicators pointing to transition from unipolar competition to multipolar cooperation. Confidence: 67%. Expected timing: 2034.',
+                countries: ['Global'],
+                time: '3 days ago'
+            }
+        ];
+
+        const countries = [
+            { code: 'RUS', name: 'Russia', flag: '🇷🇺', threat: 0.89, crisisProb: 73 },
+            { code: 'IRN', name: 'Iran', flag: '🇮🇷', threat: 0.76, crisisProb: 62 },
+            { code: 'CHN', name: 'China', flag: '🇨🇳', threat: 0.52, crisisProb: 41 },
+            { code: 'USA', name: 'United States', flag: '🇺🇸', threat: 0.38, crisisProb: 27 },
+            { code: 'EUR', name: 'Eurozone', flag: '🇪🇺', threat: 0.34, crisisProb: 24 },
+            { code: 'GBR', name: 'United Kingdom', flag: '🇬🇧', threat: 0.28, crisisProb: 19 },
+            { code: 'JPN', name: 'Japan', flag: '🇯🇵', threat: 0.21, crisisProb: 15 },
+            { code: 'IND', name: 'India', flag: '🇮🇳', threat: 0.19, crisisProb: 13 },
+            { code: 'BRA', name: 'Brazil', flag: '🇧🇷', threat: 0.17, crisisProb: 11 }
+        ];
+
+        const leverageData = [
+            { country: '🇺🇸 USA', overall: 0.82, economic: 0.78, military: 0.95, diplomatic: 0.88, trend: 'stable' },
+            { country: '🇨🇳 China', overall: 0.79, economic: 0.91, military: 0.72, diplomatic: 0.74, trend: 'gaining' },
+            { country: '🇷🇺 Russia', overall: 0.45, economic: 0.38, military: 0.82, diplomatic: 0.16, trend: 'losing' },
+            { country: '🇮🇪 Iran', overall: 0.38, economic: 0.52, military: 0.45, diplomatic: 0.18, trend: 'declining' },
+            { country: '🇪🇺 Eurozone', overall: 0.71, economic: 0.82, military: 0.48, diplomatic: 0.83, trend: 'stable' }
+        ];
+
+        // Populate alerts
+        function renderAlerts() {
+            const grid = document.getElementById('alertGrid');
+            grid.innerHTML = alerts.map(alert => `
+                <div class="alert-card ${alert.type}">
+                    <div class="alert-header">
+                        <span class="alert-type">${alert.alertType.replace(/_/g, ' ')}</span>
+                        <span class="alert-time">${alert.time}</span>
+                    </div>
+                    <div class="alert-title">${alert.title}</div>
+                    <div class="alert-description">${alert.description}</div>
+                    <div class="alert-metrics">
+                        <span class="alert-metric">🌍 ${alert.countries.join(', ')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate countries
+        function renderCountries() {
+            const list = document.getElementById('countryList');
+            list.innerHTML = countries.map(country => `
+                <div class="country-item">
+                    <div class="country-info">
+                        <span class="country-flag">${country.flag}</span>
+                        <div>
+                            <div class="country-name">${country.name}</div>
+                            <div class="country-code">${country.code}</div>
+                        </div>
+                    </div>
+                    <div class="country-metrics">
+                        <div class="threat-bar">
+                            <div class="threat-bar-fill" style="width: ${country.threat * 100}%; background: ${country.threat > 0.7 ? '#ef4444' : country.threat > 0.5 ? '#f59e0b' : '#10b981'};"></div>
+                        </div>
+                        <span style="font-size: 0.75rem; opacity: 0.7;">${country.crisisProb}% crisis</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate leverage tracker
+        function renderLeverage() {
+            const list = document.getElementById('leverageList');
+            list.innerHTML = leverageData.map(item => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; margin-bottom: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">${item.country}</span>
+                        <span class="tag ${item.trend === 'losing' ? 'critical' : item.trend === 'gaining' ? 'warning' : ''}" style="font-size: 0.7rem;">${item.trend}</span>
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: ${item.overall > 0.7 ? '#10b981' : item.overall > 0.5 ? '#f59e0b' : '#ef4444'};">${item.overall.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Chart configurations
+        const chartColors = {
+            primary: '#3b82f6',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            grid: 'rgba(255, 255, 255, 0.1)'
+        };
+
+        // System Health Chart
+        function createSystemHealthChart() {
+            const ctx = document.getElementById('systemHealthChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Crisis Probability',
+                        data: [0.55, 0.58, 0.61, 0.59, 0.63, 0.65, 0.67, 0.66, 0.68, 0.67, 0.69, 0.67],
+                        borderColor: chartColors.warning,
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Deviation from Baseline',
+                        data: [4.5, 4.2, 3.9, 4.1, 3.7, 3.5, 3.2, 3.4, 3.1, 3.3, 3.2, 3.2],
+                        borderColor: chartColors.success,
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Triangulation Health',
+                        data: [0.72, 0.71, 0.70, 0.69, 0.68, 0.67, 0.66, 0.67, 0.68, 0.67, 0.69, 0.68],
+                        borderColor: chartColors.primary,
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#e2e8f0',
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: chartColors.grid },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: chartColors.grid },
+                            ticks: { color: '#94a3b8' },
+                            min: 0,
+                            max: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // Currency Threat Chart
+        function createCurrencyThreatChart() {
+            const ctx = document.getElementById('currencyThreatChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Volatility', 'Reserves', 'Sanctions', 'Capital Flight', 'Energy Dep'],
+                    datasets: [{
+                        label: 'Threat Level',
+                        data: [0.42, 0.38, 0.15, 0.51, 0.47],
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: '#1a1a2e',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 1,
+                            grid: { color: chartColors.grid },
+                            ticks: { 
+                                backdropColor: 'transparent',
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Paradigm Chart
+        function createParadigmChart() {
+            const ctx = document.getElementById('paradigmChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2024', '2026', '2028', '2030', '2032', '2034', '2036', '2038', '2040', '2042', '2044'],
+                    datasets: [{
+                        label: 'Unipolar US Dominance',
+                        data: [80, 70, 55, 40, 25, 15, 10, 8, 7, 6, 5],
+                        borderColor: 'rgba(59, 130, 246, 0.8)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: false
+                    }, {
+                        label: 'Multipolar Competition',
+                        data: [15, 25, 35, 45, 40, 50, 55, 58, 60, 62, 63],
+                        borderColor: 'rgba(245, 158, 11, 0.8)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: false
+                    }, {
+                        label: 'Multipolar Cooperation',
+                        data: [5, 5, 10, 15, 35, 30, 35, 34, 33, 35, 32],
+                        borderColor: 'rgba(16, 185, 129, 0.8)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#e2e8f0',
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.parsed.y}% influence`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: chartColors.grid },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: chartColors.grid },
+                            ticks: { color: '#94a3b8' },
+                            min: 0,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Paradigm Influence %',
+                                color: '#e2e8f0'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAlerts();
+            renderCountries();
+            renderLeverage();
+            createSystemHealthChart();
+            createCurrencyThreatChart();
+            createParadigmChart();
+        });
+
+        // Country selector change handler
+        document.getElementById('countrySelect').addEventListener('change', function() {
+            const values = {
+                'CHN': { volatility: 0.35, reserve: 0.82, sanction: 0.08, capital: 0.22 },
+                'RUS': { volatility: 0.72, reserve: 0.15, sanction: 0.85, capital: 0.78 },
+                'USA': { volatility: 0.42, reserve: 0.38, sanction: 0.15, capital: 0.51 },
+                'EUR': { volatility: 0.28, reserve: 0.55, sanction: 0.12, capital: 0.18 },
+                'IRN': { volatility: 0.65, reserve: 0.28, sanction: 0.72, capital: 0.68 }
+            };
+            
+            const selected = values[this.value];
+            document.getElementById('volatilityValue').textContent = selected.volatility.toFixed(2);
+            document.getElementById('volatilityValue').className = 'metric-value ' + (selected.volatility > 0.5 ? 'critical' : 'warning');
+            
+            document.getElementById('reserveValue').textContent = selected.reserve.toFixed(2);
+            document.getElementById('reserveValue').className = 'metric-value ' + (selected.reserve < 0.3 ? 'critical' : selected.reserve < 0.5 ? 'warning' : 'good');
+            
+            document.getElementById('sanctionValue').textContent = selected.sanction.toFixed(2);
+            document.getElementById('sanctionValue').className = 'metric-value ' + (selected.sanction > 0.6 ? 'critical' : selected.sanction > 0.3 ? 'warning' : 'good');
+            
+            document.getElementById('capitalValue').textContent = selected.capital.toFixed(2);
+            document.getElementById('capitalValue').className = 'metric-value ' + (selected.capital > 0.6 ? 'critical' : selected.capital > 0.4 ? 'warning' : 'good');
+
+            // Update crisis probabilities
+            const crisisProbs = {
+                'CHN': [12, 23, 41, 52, 61, 68, 72, 75, 76, 77, 78],
+                'RUS': [35, 52, 68, 73, 78, 80, 82, 84, 85, 86, 87, 88],
+                'USA': [18, 24, 34, 41, 50, 57, 62, 67, 70, 72, 73],
+                'EUR': [15, 19, 24, 28, 32, 36, 40, 43, 46, 48, 50],
+                'IRN': [28, 38, 48, 55, 62, 67, 70, 73, 75, 76, 77]
+            };
+            
+            const probs = crisisProbs[this.value];
+            document.getElementById('crisisProb6mo').textContent = probs[0] + '%';
+            document.getElementById('crisisProb5yr').textContent = probs[4] + '%';
+            document.getElementById('crisisProb10yr').textContent = probs[8] + '%';
+            document.getElementById('crisisProb20yr').textContent = probs[11] + '%';
+            
+            document.getElementById('crisisProb6mo').className = 'font-size: 2rem; font-weight: 700; color: ' + (probs[0] > 20 ? '#ef4444' : probs[0] > 10 ? '#f59e0b' : '#10b981');
+            document.getElementById('crisisProb5yr').className = 'font-size: 2rem; font-weight: 700; color: ' + (probs[4] > 40 ? '#ef4444' : probs[4] > 25 ? '#f59e0b' : '#10b981');
+            document.getElementById('crisisProb10yr').className = 'font-size: 2rem; font-weight: 700; color: ' + (probs[8] > 50 ? '#ef4444' : probs[8] > 35 ? '#f59e0b' : '#10b981');
+            document.getElementById('crisisProb20yr').className = 'font-size: 2rem; font-weight: 700; color: ' + (probs[11] > 60 ? '#ef4444' : probs[11] > 45 ? '#f59e0b' : '#10b981');
+
+            // Update radar chart
+            const chart = Chart.getChart('currencyThreatChart');
+            if (chart) {
+                chart.data.datasets[0].data = [
+                    selected.volatility,
+                    selected.reserve,
+                    selected.sanction,
+                    selected.capital,
+                    (selected.volatility + selected.reserve + selected.sanction + selected.capital) / 4
+                ];
+                chart.update();
+            }
+        });
+    </script>
+</body>
+</html>
