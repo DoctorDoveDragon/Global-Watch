@@ -45,6 +45,12 @@ bun install --frozen-lockfile
 ✅ Build pipeline unblocked
 
 ## Additional Notes
-- The regenerated `bun.lock` uses `configVersion: 0` instead of `configVersion: 1`
+- The regenerated `bun.lock` uses `configVersion: 0` instead of `configVersion: 1`. This 
+  change occurred during the npm-to-bun migration process. The configVersion indicates the 
+  lockfile format version, and version 0 is a stable, widely compatible format that works 
+  reliably with Bun 1.3.x. This ensures better compatibility and stability across different 
+  Bun versions.
 - Package versions were updated to their latest compatible versions during the regeneration
-- The build may still encounter network issues with external resources (e.g., Google Fonts) depending on the environment's network connectivity, but these are unrelated to the lockfile integrity issue
+- The build may still encounter network issues with external resources (e.g., Google Fonts) 
+  depending on the environment's network connectivity, but these are unrelated to the 
+  lockfile integrity issue
