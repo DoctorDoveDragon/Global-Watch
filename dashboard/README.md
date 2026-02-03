@@ -303,4 +303,4 @@ For questions about the Global Watch project:
 **Made with ❤️ by the Global Watch Team**
 
 **Version**: 1.0.0  
-**Last Updated**: 2024
+**Last Updated**: February 2024

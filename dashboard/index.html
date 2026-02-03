@@ -577,20 +577,20 @@
             <span class="status-badge">● LIVE</span>
         </h1>
         <div class="header-controls">
-            <button class="header-btn" onclick="refreshData()">🔄 Refresh</button>
+            <button class="header-btn" onclick="refreshData(event)">🔄 Refresh</button>
             <button class="header-btn">📊 Export</button>
             <button class="header-btn">⚙️ Settings</button>
         </div>
     </div>
 
     <div class="tab-container">
-        <button class="tab active" onclick="switchTab('overview')">📈 Overview</button>
-        <button class="tab" onclick="switchTab('world')">🌐 World Map</button>
-        <button class="tab" onclick="switchTab('news')">📰 Live News</button>
-        <button class="tab" onclick="switchTab('alliances')">🤝 Alliances & Orgs</button>
-        <button class="tab" onclick="switchTab('economics')">💰 Economics</button>
-        <button class="tab" onclick="switchTab('trade')">🚢 Trade Routes</button>
-        <button class="tab" onclick="switchTab('wars')">⚔️ World Wars Analysis</button>
+        <button class="tab active" onclick="switchTab('overview', event)">📈 Overview</button>
+        <button class="tab" onclick="switchTab('world', event)">🌐 World Map</button>
+        <button class="tab" onclick="switchTab('news', event)">📰 Live News</button>
+        <button class="tab" onclick="switchTab('alliances', event)">🤝 Alliances & Orgs</button>
+        <button class="tab" onclick="switchTab('economics', event)">💰 Economics</button>
+        <button class="tab" onclick="switchTab('trade', event)">🚢 Trade Routes</button>
+        <button class="tab" onclick="switchTab('wars', event)">⚔️ World Wars Analysis</button>
     </div>
 
     <div class="main-container">
@@ -911,7 +911,7 @@
         ];
 
         // Tab Switching
-        function switchTab(tabName) {
+        function switchTab(tabName, event) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -922,7 +922,9 @@
             
             // Show selected tab
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
         }
 
         // Populate Country Grid
@@ -1080,7 +1082,7 @@
         });
 
         // Refresh Data
-        function refreshData() {
+        function refreshData(event) {
             const btn = event.target;
             btn.innerHTML = '⟳ Refreshing...';
             btn.disabled = true;
