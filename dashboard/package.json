@@ -1,0 +1,32 @@
+{
+  "name": "global-geopolitics-dashboard",
+  "version": "1.0.0",
+  "description": "Standalone Geopolitics Intelligence Dashboard - A comprehensive, self-contained dashboard for monitoring global geopolitical trends, conflicts, economics, and alliances",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "geopolitics",
+    "dashboard",
+    "intelligence",
+    "monitoring",
+    "analytics",
+    "global-politics",
+    "conflicts",
+    "economics",
+    "trade"
+  ],
+  "author": "Global Watch Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DoctorDoveDragon/Global-Watch.git",
+    "directory": "dashboard"
+  }
+}
